@@ -35,6 +35,8 @@ public class CarResponse {
 
     private Long categoryId;
 
+    private String categoryName;
+
     private Boolean active;
 
     private LocalDateTime createdAt;

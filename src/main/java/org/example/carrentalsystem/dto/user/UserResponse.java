@@ -26,7 +26,7 @@ public class UserResponse {
 
     private Boolean active;
 
-    private Role role;
+    private String role;
 
     private LocalDateTime createdAt;
 
