@@ -12,11 +12,13 @@ import org.example.carrentalsystem.repository.CarCategoryRepository;
 import org.example.carrentalsystem.repository.CarRepository;
 import org.example.carrentalsystem.service.CarCategoryService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CarCategoryServiceImpl implements CarCategoryService {
 
     private final CarCategoryRepository carCategoryRepository;

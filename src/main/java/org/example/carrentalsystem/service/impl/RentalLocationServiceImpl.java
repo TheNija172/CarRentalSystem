@@ -11,10 +11,12 @@ import org.example.carrentalsystem.mapper.RentalLocationMapper;
 import org.example.carrentalsystem.repository.RentalLocationRepository;
 import org.example.carrentalsystem.service.RentalLocationService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class RentalLocationServiceImpl implements RentalLocationService {
 

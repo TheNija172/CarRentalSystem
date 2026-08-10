@@ -27,6 +27,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @AllArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class BookingServiceImpl implements BookingService {
 

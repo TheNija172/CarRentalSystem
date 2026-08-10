@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
