@@ -24,6 +24,7 @@ public class RentalLocationServiceImpl implements RentalLocationService {
     private final RentalLocationMapper rentalLocationMapper;
 
     @Override
+    @Transactional
     public RentalLocationResponse create(RentalLocationCreateRequest request) {
 
         if(rentalLocationRepository.existsByNameAndAddress(request.getName(), request.getAddress())) {
@@ -57,6 +58,7 @@ public class RentalLocationServiceImpl implements RentalLocationService {
     }
 
     @Override
+    @Transactional
     public RentalLocationResponse update(Long id, RentalLocationUpdateRequest request) {
 
         RentalLocation location = rentalLocationRepository.findByIdAndActiveTrue(id)
@@ -72,6 +74,7 @@ public class RentalLocationServiceImpl implements RentalLocationService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
 
         RentalLocation location = rentalLocationRepository.findByIdAndActiveTrue(id)

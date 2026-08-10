@@ -10,11 +10,11 @@ public interface BookingService {
 
     BookingResponse create(BookingCreateRequest request, Long userId);
 
-    BookingResponse getById(Long id);
+    BookingResponse getById(Long id, Long userId);
 
     List<BookingResponse> getAll();
 
     List<BookingResponse> getByUserId(Long userId);
 
-    void cancel(Long id);
+    void cancel(Long id, Long userId);
 }

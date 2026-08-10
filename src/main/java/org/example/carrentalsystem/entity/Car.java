@@ -49,10 +49,12 @@ public class Car {
     @Column(nullable = false)
     private String color;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Transmission transmission;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "fuel_type", nullable = false)
     private FuelType fuelType;

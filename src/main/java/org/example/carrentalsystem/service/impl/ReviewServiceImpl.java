@@ -14,6 +14,7 @@ import org.example.carrentalsystem.repository.BookingRepository;
 import org.example.carrentalsystem.repository.ReviewRepository;
 import org.example.carrentalsystem.repository.UserRepository;
 import org.example.carrentalsystem.service.ReviewService;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -90,10 +91,14 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public void delete(Long id) {
+    public void delete(Long id, Long userId) {
 
         Review review = reviewRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Review with id " + id + " not found"));
+
+        if (!review.getUser().getId().equals(userId)) {
+            throw new AccessDeniedException("You cannot delete this review");
+        }
 
         reviewRepository.delete(review);
     }

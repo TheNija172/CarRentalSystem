@@ -7,6 +7,7 @@ import org.example.carrentalsystem.dto.car.CarResponse;
 import org.example.carrentalsystem.dto.car.CarUpdateRequest;
 import org.example.carrentalsystem.service.CarService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,13 +18,6 @@ import java.util.List;
 public class CarController {
 
     private final CarService carService;
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public CarResponse create(@Valid @RequestBody CarCreateRequest request) {
-
-        return carService.create(request);
-    }
 
     @GetMapping("/{id}")
     public CarResponse getById(@PathVariable Long id) {
@@ -37,12 +31,22 @@ public class CarController {
         return carService.getAll();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public CarResponse create(@Valid @RequestBody CarCreateRequest request) {
+
+        return carService.create(request);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public CarResponse update(@PathVariable Long id, @Valid @RequestBody CarUpdateRequest request) {
 
         return carService.update(id, request);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {

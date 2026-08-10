@@ -27,6 +27,7 @@ public class CarServiceImpl implements CarService {
     private final CarCategoryRepository carCategoryRepository;
 
     @Override
+    @Transactional
     public CarResponse create(CarCreateRequest request) {
 
         if (carRepository.existsByLicensePlate(request.getLicensePlate())) {
@@ -73,6 +74,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    @Transactional
     public CarResponse update(Long id, CarUpdateRequest request) {
 
         Car car = carRepository.findById(id).orElseThrow(() ->
@@ -103,6 +105,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
 
         Car car = carRepository.findById(id)

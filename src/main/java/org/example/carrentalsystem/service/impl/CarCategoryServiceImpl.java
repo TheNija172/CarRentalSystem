@@ -27,6 +27,7 @@ public class CarCategoryServiceImpl implements CarCategoryService {
 
 
     @Override
+    @Transactional
     public CarCategoryResponse create(CarCategoryCreateRequest request) {
 
         CarCategory category = carCategoryMapper.toEntity(request);
@@ -57,6 +58,7 @@ public class CarCategoryServiceImpl implements CarCategoryService {
     }
 
     @Override
+    @Transactional
     public CarCategoryResponse update(Long id, CarCategoryUpdateRequest request) {
 
         CarCategory category = carCategoryRepository.findById(id)
@@ -72,6 +74,7 @@ public class CarCategoryServiceImpl implements CarCategoryService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
 
         CarCategory category = carCategoryRepository.findById(id)

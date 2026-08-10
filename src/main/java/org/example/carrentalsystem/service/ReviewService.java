@@ -13,5 +13,5 @@ public interface ReviewService {
 
     List<ReviewResponse> getByCarId(Long carId);
 
-    void delete(Long id);
+    void delete(Long id, Long userId);
 }

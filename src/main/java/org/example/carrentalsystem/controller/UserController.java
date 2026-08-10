@@ -6,6 +6,7 @@ import org.example.carrentalsystem.dto.user.UserResponse;
 import org.example.carrentalsystem.dto.user.UserUpdateRequest;
 import org.example.carrentalsystem.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class UserController {
         return userService.getById(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public List<UserResponse> getAll() {
 

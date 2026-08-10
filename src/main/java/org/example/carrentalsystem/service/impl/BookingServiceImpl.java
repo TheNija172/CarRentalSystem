@@ -17,6 +17,7 @@ import org.example.carrentalsystem.repository.CarRepository;
 import org.example.carrentalsystem.repository.RentalLocationRepository;
 import org.example.carrentalsystem.repository.UserRepository;
 import org.example.carrentalsystem.service.BookingService;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -117,10 +118,18 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingResponse getById(Long id) {
+    public BookingResponse getById(Long id, Long userId) {
 
         Booking booking = bookingRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Booking with id " + id + " not found"
+                ));
+
+        if (!booking.getUser().getId().equals(userId)) {
+            throw new AccessDeniedException(
+                    "You do not have access to this booking"
+            );
+        }
 
         return bookingMapper.toResponse(booking);
     }
@@ -150,22 +159,24 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public void cancel(Long id) {
+    public void cancel(Long id, Long userId) {
 
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Booking with id " + id + " not found"
                 ));
 
-        if (booking.getStatus() == BookingStatus.CANCELLED) {
-            throw new BusinessException(
-                    "Booking is already cancelled"
+        if (!booking.getUser().getId().equals(userId)) {
+            throw new AccessDeniedException(
+                    "You cannot cancel this booking"
             );
         }
 
-        if (booking.getStatus() == BookingStatus.COMPLETED) {
+        if (booking.getStatus() != BookingStatus.PENDING
+                && booking.getStatus() != BookingStatus.CONFIRMED) {
+
             throw new BusinessException(
-                    "Completed booking cannot be cancelled"
+                    "Booking cannot be cancelled"
             );
         }
 

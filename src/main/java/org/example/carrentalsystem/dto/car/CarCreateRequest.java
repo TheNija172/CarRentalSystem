@@ -22,7 +22,7 @@ public class CarCreateRequest {
     @NotBlank
     private String model;
 
-    @NotBlank
+    @NotNull
     private Integer productionYear;
 
     @NotBlank
@@ -31,16 +31,16 @@ public class CarCreateRequest {
     @NotBlank
     private String color;
 
-    @NotBlank
+    @NotNull
     private Transmission transmission;
 
-    @NotBlank
+    @NotNull
     private FuelType fuelType;
 
     @NotNull
     @Min(1)
     private Integer seats;
 
-    @NotBlank
+    @NotNull
     private Long categoryId;
 }
