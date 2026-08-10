@@ -24,6 +24,10 @@ server:
   port: ${SERVER_PORT:8080}
 
 jwt:
-  secret: ${JWT_SECRET:my-super-secret-key-for-car-rental-system-which-is-long-enough}
-  expiration: ${JWT_EXPIRATION:3600000}
+  secret: bXktc3VwZXItc2VjcmV0LWtleS1mb3ItY2FyLXJlbnRhbC1zeXN0ZW0tMjAyNg==
+  expiration: 86400000
+
+logging:
+  level:
+    org.springframework.security: DEBUG
 
