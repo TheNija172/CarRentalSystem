@@ -29,6 +29,12 @@ public class BookingController {
         return bookingService.create(request, userDetails.getUser().getId());
     }
 
+    @GetMapping("/my")
+    public List<BookingResponse> getMyBookings(@AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        return bookingService.getByUserId(userDetails.getUser().getId());
+    }
+
     @GetMapping("/{id}")
     public BookingResponse getById(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
@@ -47,12 +53,6 @@ public class BookingController {
     public List<BookingResponse> getByUserId(@PathVariable Long userId) {
 
         return bookingService.getByUserId(userId);
-    }
-
-    @GetMapping("/my")
-    public List<BookingResponse> getMyBookings(@AuthenticationPrincipal CustomUserDetails userDetails) {
-
-        return bookingService.getByUserId(userDetails.getUser().getId());
     }
 
     @PatchMapping("/{id}/cancel")
