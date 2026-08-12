@@ -31,3 +31,6 @@ logging:
   level:
     org.springframework.security: DEBUG
 
+springdoc:
+  swagger-ui:
+    tags-sorter: none
