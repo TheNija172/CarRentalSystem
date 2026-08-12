@@ -1,16 +1,16 @@
 package org.example.carrentalsystem.repository;
 
-import org.example.carrentalsystem.entity.Review;
+import org.example.carrentalsystem.entity.ReviewEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface ReviewRepository extends JpaRepository<Review, Long> {
+public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
 
-    Optional<Review> findByBookingId(Long bookingId);
+    Optional<ReviewEntity> findByBookingId(Long bookingId);
 
-    List<Review> findByCarId(Long carId);
+    List<ReviewEntity> findByCarId(Long carId);
 
     boolean existsByBookingId(Long bookingId);
 }

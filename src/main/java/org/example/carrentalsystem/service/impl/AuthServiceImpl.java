@@ -1,6 +1,7 @@
 package org.example.carrentalsystem.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.carrentalsystem.dto.auth.AuthResponse;
 import org.example.carrentalsystem.dto.auth.LoginRequest;
 import org.example.carrentalsystem.dto.auth.RegisterRequest;
@@ -15,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -27,17 +29,33 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse register(RegisterRequest request) {
 
+        log.info(
+                "User registration attempt: username={}",
+                request.getUsername()
+        );
+
         UserResponse user = userService.create(mapToUserCreateRequest(request));
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
 
         String token = jwtService.generateToken(userDetails);
 
+        log.info(
+                "User registered successfully: userId={}, username={}",
+                user.getId(),
+                user.getUsername()
+        );
+
         return new AuthResponse(token);
     }
 
     @Override
     public AuthResponse login(LoginRequest request) {
+
+        log.info(
+                "Authentication attempt: username={}",
+                request.getUsername()
+        );
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -49,6 +67,11 @@ public class AuthServiceImpl implements AuthService {
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
 
         String token = jwtService.generateToken(userDetails);
+
+        log.info(
+                "User authenticated successfully: username={}",
+                userDetails.getUsername()
+        );
 
         return new AuthResponse(token);
     }

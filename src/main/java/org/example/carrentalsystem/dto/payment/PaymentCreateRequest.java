@@ -17,6 +17,4 @@ public class PaymentCreateRequest {
     @NotNull
     private PaymentMethod paymentMethod;
 
-    @NotNull
-    private Long bookingId;
 }

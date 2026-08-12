@@ -1,0 +1,1633 @@
+openapi: 3.1.0
+info:
+  title: Car Rental API
+  description: REST API for car rental service
+  version: "1.0"
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+tags:
+- name: Auth
+  description: Authentication and authorization operations
+- name: Users
+  description: Operations for user management
+- name: Car Categories
+  description: Operations for car category management
+- name: Cars
+  description: Operations for car management
+- name: Rental Locations
+  description: Operations for rental location management
+- name: Payments
+  description: Operations for payment management
+- name: Reviews
+  description: Operations for review management
+- name: Bookings
+  description: Operations for car bookings
+paths:
+  /api/v1/users/{id}:
+    get:
+      tags:
+      - Users
+      summary: Get user by ID
+      description: Returns a user by their ID
+      operationId: getById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: User successfully retrieved
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "404":
+          description: User not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+      security:
+      - bearerAuth: []
+    put:
+      tags:
+      - Users
+      summary: Update user
+      description: Updates an existing user
+      operationId: update
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdateRequest"
+        required: true
+      responses:
+        "200":
+          description: User successfully updated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "400":
+          description: Invalid user data
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "403":
+          description: Access denied
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "404":
+          description: User not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - Users
+      summary: Delete user
+      description: Deletes a user
+      operationId: delete
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: User successfully deleted
+        "403":
+          description: Access denied
+        "404":
+          description: User not found
+      security:
+      - bearerAuth: []
+  /api/v1/rental-locations/{id}:
+    get:
+      tags:
+      - Rental Locations
+      summary: Get rental location by ID
+      description: Returns a rental location by its ID
+      operationId: getById_1
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Location successfully retrieved
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RentalLocationResponse"
+        "404":
+          description: Location not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RentalLocationResponse"
+      security:
+      - bearerAuth: []
+    put:
+      tags:
+      - Rental Locations
+      summary: Update rental location
+      description: Updates an existing rental location. Available only to administrators
+      operationId: update_1
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RentalLocationUpdateRequest"
+        required: true
+      responses:
+        "200":
+          description: Location successfully updated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RentalLocationResponse"
+        "400":
+          description: Invalid location data
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RentalLocationResponse"
+        "403":
+          description: Access denied
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RentalLocationResponse"
+        "404":
+          description: Location not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RentalLocationResponse"
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - Rental Locations
+      summary: Delete rental location
+      description: Deletes a rental location. Available only to administrators
+      operationId: delete_1
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: Location successfully deleted
+        "403":
+          description: Access denied
+        "404":
+          description: Location not found
+        "409":
+          description: Location is in use
+      security:
+      - bearerAuth: []
+  /api/v1/cars/{id}:
+    get:
+      tags:
+      - Cars
+      summary: Get car by ID
+      description: Returns an active car by its ID
+      operationId: getById_2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Car successfully retrieved
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CarResponse"
+        "404":
+          description: Car not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CarResponse"
+      security:
+      - bearerAuth: []
+    put:
+      tags:
+      - Cars
+      summary: Update car
+      description: Updates an existing car. Available only to administrators
+      operationId: update_2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CarUpdateRequest"
+        required: true
+      responses:
+        "200":
+          description: Car successfully updated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CarResponse"
+        "400":
+          description: Invalid car data
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CarResponse"
+        "403":
+          description: Access denied
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CarResponse"
+        "404":
+          description: Car not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CarResponse"
+        "409":
+          description: Car with this license plate already exists
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CarResponse"
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - Cars
+      summary: Delete car
+      description: Deletes a car. Available only to administrators
+      operationId: delete_2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: Car successfully deleted
+        "403":
+          description: Access denied
+        "404":
+          description: Car not found
+        "409":
+          description: Car cannot be deleted because it is in use
+      security:
+      - bearerAuth: []
+  /api/v1/car-categories/{id}:
+    get:
+      tags:
+      - Car Categories
+      summary: Get car category by ID
+      description: Returns a car category by its ID
+      operationId: getById_3
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Category successfully retrieved
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CarCategoryResponse"
+        "404":
+          description: Category not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CarCategoryResponse"
+      security:
+      - bearerAuth: []
+    put:
+      tags:
+      - Car Categories
+      summary: Update car category
+      description: Updates an existing car category. Available only to administrators
+      operationId: update_3
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CarCategoryUpdateRequest"
+        required: true
+      responses:
+        "200":
+          description: Category successfully updated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CarCategoryResponse"
+        "400":
+          description: Invalid category data
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CarCategoryResponse"
+        "403":
+          description: Access denied
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CarCategoryResponse"
+        "404":
+          description: Category not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CarCategoryResponse"
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - Car Categories
+      summary: Delete car category
+      description: Deletes a car category. Available only to administrators
+      operationId: delete_3
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: Category successfully deleted
+        "403":
+          description: Access denied
+        "404":
+          description: Category not found
+        "409":
+          description: Category is in use by cars
+      security:
+      - bearerAuth: []
+  /api/v1/reviews:
+    post:
+      tags:
+      - Reviews
+      summary: Create review
+      description: Creates a new review for a car. Available to authenticated users
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewCreateRequest"
+        required: true
+      responses:
+        "201":
+          description: Review successfully created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ReviewResponse"
+        "400":
+          description: Invalid review data
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ReviewResponse"
+        "403":
+          description: Access denied
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ReviewResponse"
+        "404":
+          description: Car or booking not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ReviewResponse"
+      security:
+      - bearerAuth: []
+  /api/v1/rental-locations:
+    get:
+      tags:
+      - Rental Locations
+      summary: Get all rental locations
+      description: Returns all rental locations
+      operationId: getAll
+      responses:
+        "200":
+          description: Locations successfully retrieved
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RentalLocationResponse"
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - Rental Locations
+      summary: Create rental location
+      description: Creates a new rental location. Available only to administrators
+      operationId: create_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RentalLocationCreateRequest"
+        required: true
+      responses:
+        "201":
+          description: Location successfully created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RentalLocationResponse"
+        "400":
+          description: Invalid location data
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RentalLocationResponse"
+        "403":
+          description: Access denied
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RentalLocationResponse"
+      security:
+      - bearerAuth: []
+  /api/v1/payments/booking/{bookingId}:
+    get:
+      tags:
+      - Payments
+      summary: Get payments by booking ID
+      description: Returns all payments for the specified booking. Available to the
+        booking owner
+      operationId: getByBookingId
+      parameters:
+      - name: bookingId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Payments successfully retrieved
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PaymentResponse"
+        "403":
+          description: Access denied
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PaymentResponse"
+        "404":
+          description: Booking not found
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PaymentResponse"
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - Payments
+      summary: Create payment for booking
+      description: Creates a new payment for the specified booking. Available to the
+        booking owner
+      operationId: create_2
+      parameters:
+      - name: bookingId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentCreateRequest"
+        required: true
+      responses:
+        "201":
+          description: Payment successfully created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+        "400":
+          description: Invalid payment data
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+        "403":
+          description: Access denied
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+        "404":
+          description: Booking not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+      security:
+      - bearerAuth: []
+  /api/v1/cars:
+    get:
+      tags:
+      - Cars
+      summary: Get all active cars
+      description: Returns all active cars
+      operationId: getAll_1
+      responses:
+        "200":
+          description: Cars successfully retrieved
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CarResponse"
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - Cars
+      summary: Create car
+      description: Creates a new car. Available only to administrators
+      operationId: create_3
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CarCreateRequest"
+        required: true
+      responses:
+        "201":
+          description: Car successfully created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CarResponse"
+        "400":
+          description: Invalid car data
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CarResponse"
+        "403":
+          description: Access denied
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CarResponse"
+        "409":
+          description: Car with this license plate already exists
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CarResponse"
+      security:
+      - bearerAuth: []
+  /api/v1/car-categories:
+    get:
+      tags:
+      - Car Categories
+      summary: Get all car categories
+      description: Returns all car categories
+      operationId: getAll_2
+      responses:
+        "200":
+          description: Categories successfully retrieved
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CarCategoryResponse"
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - Car Categories
+      summary: Create car category
+      description: Creates a new car category. Available only to administrators
+      operationId: create_4
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CarCategoryCreateRequest"
+        required: true
+      responses:
+        "201":
+          description: Category successfully created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CarCategoryResponse"
+        "400":
+          description: Invalid category data
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CarCategoryResponse"
+        "403":
+          description: Access denied
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CarCategoryResponse"
+      security:
+      - bearerAuth: []
+  /api/v1/bookings:
+    get:
+      tags:
+      - Bookings
+      summary: Get all bookings
+      description: Returns all bookings. Available only to administrators
+      operationId: getAll_3
+      responses:
+        "200":
+          description: Bookings successfully retrieved
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BookingResponse"
+        "403":
+          description: Access denied
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BookingResponse"
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - Bookings
+      summary: Create booking
+      description: Creates a new booking for the authenticated user
+      operationId: create_5
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingCreateRequest"
+        required: true
+      responses:
+        "201":
+          description: Booking successfully created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BookingResponse"
+        "400":
+          description: Invalid booking data
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BookingResponse"
+        "409":
+          description: Car is already booked for the selected period
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BookingResponse"
+      security:
+      - bearerAuth: []
+  /api/v1/auth/register:
+    post:
+      tags:
+      - Auth
+      summary: Register new user
+      description: Registers a new user and returns authentication tokens
+      operationId: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+        required: true
+      responses:
+        "201":
+          description: User successfully registered
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Invalid registration data
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "409":
+          description: Username or email already exists
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+  /api/v1/auth/login:
+    post:
+      tags:
+      - Auth
+      summary: Login
+      description: Authenticates a user and returns authentication tokens
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+        required: true
+      responses:
+        "200":
+          description: Successfully authenticated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Invalid login data
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+  /api/v1/payments/{id}/status:
+    patch:
+      tags:
+      - Payments
+      summary: Update payment status
+      description: Updates the status of an existing payment. Available only to administrators
+      operationId: updateStatus
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: status
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - PENDING
+          - COMPLETED
+          - FAILED
+          - REFUNDED
+      responses:
+        "200":
+          description: Payment status successfully updated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+        "400":
+          description: Invalid status value
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+        "403":
+          description: Access denied
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+        "404":
+          description: Payment not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+      security:
+      - bearerAuth: []
+  /api/v1/bookings/{id}/cancel:
+    patch:
+      tags:
+      - Bookings
+      summary: Cancel booking
+      description: Cancels a booking belonging to the authenticated user
+      operationId: cancel
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: Booking successfully cancelled
+        "403":
+          description: User does not have access to this booking
+        "404":
+          description: Booking not found
+        "409":
+          description: Booking cannot be cancelled
+      security:
+      - bearerAuth: []
+  /api/v1/users:
+    get:
+      tags:
+      - Users
+      summary: Get all users
+      description: Returns all users. Available only to administrators
+      operationId: getAll_4
+      responses:
+        "200":
+          description: Users successfully retrieved
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserResponse"
+        "403":
+          description: Access denied
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserResponse"
+      security:
+      - bearerAuth: []
+  /api/v1/users/username/{username}:
+    get:
+      tags:
+      - Users
+      summary: Get user by username
+      description: Returns a user by their username
+      operationId: getByUsername
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: User successfully retrieved
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "404":
+          description: User not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+      security:
+      - bearerAuth: []
+  /api/v1/reviews/{id}:
+    get:
+      tags:
+      - Reviews
+      summary: Get review by ID
+      description: Returns a review by its ID
+      operationId: getById_4
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Review successfully retrieved
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ReviewResponse"
+        "404":
+          description: Review not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ReviewResponse"
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - Reviews
+      summary: Delete review
+      description: Deletes a review. Available to the review author or administrators
+      operationId: delete_4
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: Review successfully deleted
+        "403":
+          description: Access denied
+        "404":
+          description: Review not found
+      security:
+      - bearerAuth: []
+  /api/v1/reviews/car/{carId}:
+    get:
+      tags:
+      - Reviews
+      summary: Get reviews by car ID
+      description: Returns all reviews for the specified car
+      operationId: getByCarId
+      parameters:
+      - name: carId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Reviews successfully retrieved
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReviewResponse"
+        "404":
+          description: Car not found
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReviewResponse"
+      security:
+      - bearerAuth: []
+  /api/v1/payments/{id}:
+    get:
+      tags:
+      - Payments
+      summary: Get payment by ID
+      description: Returns a payment by its ID. Available to the payment owner
+      operationId: getById_5
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Payment successfully retrieved
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+        "403":
+          description: Access denied
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+        "404":
+          description: Payment not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+      security:
+      - bearerAuth: []
+  /api/v1/bookings/{id}:
+    get:
+      tags:
+      - Bookings
+      summary: Get bookings by id
+      description: Returns booking by id. Available only to administrators
+      operationId: getById_6
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Booking successfully retrieved
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BookingResponse"
+        "403":
+          description: Access denied
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BookingResponse"
+      security:
+      - bearerAuth: []
+  /api/v1/bookings/user/{userId}:
+    get:
+      tags:
+      - Bookings
+      summary: Get bookings by user id
+      description: Returns all user bookings. Available only to administrators
+      operationId: getByUserId
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Bookings successfully retrieved
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BookingResponse"
+        "403":
+          description: Access denied
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BookingResponse"
+      security:
+      - bearerAuth: []
+  /api/v1/bookings/my:
+    get:
+      tags:
+      - Bookings
+      summary: Get my bookings
+      description: Returns bookings of the authenticated user
+      operationId: getMyBookings
+      responses:
+        "200":
+          description: Bookings successfully retrieved
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BookingResponse"
+      security:
+      - bearerAuth: []
+components:
+  schemas:
+    UserUpdateRequest:
+      type: object
+      properties:
+        password:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phone:
+          type: string
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phone:
+          type: string
+        active:
+          type: boolean
+        role:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    RentalLocationUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+        city:
+          type: string
+        description:
+          type: string
+        active:
+          type: boolean
+    RentalLocationResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        address:
+          type: string
+        city:
+          type: string
+        description:
+          type: string
+        active:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    CarUpdateRequest:
+      type: object
+      properties:
+        brand:
+          type: string
+        model:
+          type: string
+        productionYear:
+          type: integer
+          format: int32
+        licensePlate:
+          type: string
+        color:
+          type: string
+        transmission:
+          type: string
+          enum:
+          - AUTOMATIC
+          - MANUAL
+        fuelType:
+          type: string
+          enum:
+          - PETROL
+          - DIESEL
+          - ELECTRIC
+          - HYBRID
+        seats:
+          type: integer
+          format: int32
+          minimum: 1
+        active:
+          type: boolean
+        categoryId:
+          type: integer
+          format: int64
+    CarResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        brand:
+          type: string
+        model:
+          type: string
+        productionYear:
+          type: integer
+          format: int32
+        licensePlate:
+          type: string
+        color:
+          type: string
+        transmission:
+          type: string
+          enum:
+          - AUTOMATIC
+          - MANUAL
+        fuelType:
+          type: string
+          enum:
+          - PETROL
+          - DIESEL
+          - ELECTRIC
+          - HYBRID
+        seats:
+          type: integer
+          format: int32
+        categoryId:
+          type: integer
+          format: int64
+        categoryName:
+          type: string
+        active:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    CarCategoryUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        pricePerDay:
+          type: number
+          minimum: 0.01
+    CarCategoryResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        description:
+          type: string
+        pricePerDay:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    ReviewCreateRequest:
+      type: object
+      properties:
+        rating:
+          type: integer
+          format: int32
+          maximum: 5
+          minimum: 1
+        comment:
+          type: string
+          maxLength: 1000
+          minLength: 0
+        bookingId:
+          type: integer
+          format: int64
+      required:
+      - bookingId
+      - rating
+    ReviewResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        userId:
+          type: integer
+          format: int64
+        username:
+          type: string
+        carId:
+          type: integer
+          format: int64
+        carBrand:
+          type: string
+        carModel:
+          type: string
+        bookingId:
+          type: integer
+          format: int64
+        rating:
+          type: integer
+          format: int32
+        comment:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    RentalLocationCreateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        address:
+          type: string
+          minLength: 1
+        city:
+          type: string
+          minLength: 1
+        description:
+          type: string
+      required:
+      - address
+      - city
+      - name
+    PaymentCreateRequest:
+      type: object
+      properties:
+        paymentMethod:
+          type: string
+          enum:
+          - CARD
+          - CASH
+      required:
+      - paymentMethod
+    PaymentResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        bookingId:
+          type: integer
+          format: int64
+        amount:
+          type: number
+        status:
+          type: string
+          enum:
+          - PENDING
+          - COMPLETED
+          - FAILED
+          - REFUNDED
+        paymentMethod:
+          type: string
+          enum:
+          - CARD
+          - CASH
+        transactionId:
+          type: string
+        paidAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+    CarCreateRequest:
+      type: object
+      properties:
+        brand:
+          type: string
+          minLength: 1
+        model:
+          type: string
+          minLength: 1
+        productionYear:
+          type: integer
+          format: int32
+        licensePlate:
+          type: string
+          minLength: 1
+        color:
+          type: string
+          minLength: 1
+        transmission:
+          type: string
+          enum:
+          - AUTOMATIC
+          - MANUAL
+        fuelType:
+          type: string
+          enum:
+          - PETROL
+          - DIESEL
+          - ELECTRIC
+          - HYBRID
+        seats:
+          type: integer
+          format: int32
+          minimum: 1
+        categoryId:
+          type: integer
+          format: int64
+      required:
+      - brand
+      - categoryId
+      - color
+      - fuelType
+      - licensePlate
+      - model
+      - productionYear
+      - seats
+      - transmission
+    CarCategoryCreateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        description:
+          type: string
+        pricePerDay:
+          type: number
+          minimum: 0.01
+      required:
+      - name
+      - pricePerDay
+    BookingCreateRequest:
+      type: object
+      properties:
+        carId:
+          type: integer
+          format: int64
+        pickupLocationId:
+          type: integer
+          format: int64
+        returnLocationId:
+          type: integer
+          format: int64
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+      required:
+      - carId
+      - endDate
+      - pickupLocationId
+      - returnLocationId
+      - startDate
+    BookingResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        userId:
+          type: integer
+          format: int64
+        carId:
+          type: integer
+          format: int64
+        carBrand:
+          type: string
+        carModel:
+          type: string
+        pickupLocationId:
+          type: integer
+          format: int64
+        pickupLocationName:
+          type: string
+        returnLocationId:
+          type: integer
+          format: int64
+        returnLocationName:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        totalPrice:
+          type: number
+        status:
+          type: string
+          enum:
+          - PENDING
+          - CONFIRMED
+          - CANCELLED
+          - COMPLETED
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    RegisterRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+        firstName:
+          type: string
+          minLength: 1
+        lastName:
+          type: string
+          minLength: 1
+        phone:
+          type: string
+          minLength: 1
+      required:
+      - firstName
+      - lastName
+      - password
+      - phone
+      - username
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+      required:
+      - password
+      - username
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

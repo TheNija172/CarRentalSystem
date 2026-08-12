@@ -1,13 +1,13 @@
 package org.example.carrentalsystem.service.impl;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.carrentalsystem.dto.booking.BookingCreateRequest;
 import org.example.carrentalsystem.dto.booking.BookingResponse;
-import org.example.carrentalsystem.dto.booking.BookingUpdateRequest;
-import org.example.carrentalsystem.entity.Booking;
-import org.example.carrentalsystem.entity.Car;
-import org.example.carrentalsystem.entity.RentalLocation;
-import org.example.carrentalsystem.entity.User;
+import org.example.carrentalsystem.entity.BookingEntity;
+import org.example.carrentalsystem.entity.CarEntity;
+import org.example.carrentalsystem.entity.RentalLocationEntity;
+import org.example.carrentalsystem.entity.UserEntity;
 import org.example.carrentalsystem.enums.BookingStatus;
 import org.example.carrentalsystem.exception.BusinessException;
 import org.example.carrentalsystem.exception.ResourceNotFoundException;
@@ -23,10 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+@Slf4j
 @AllArgsConstructor
 @Transactional(readOnly = true)
 @Service
@@ -42,14 +42,22 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public BookingResponse create(BookingCreateRequest request, Long userId) {
 
+        log.info(
+                "Creating booking: userId={}, carId={}, startDate={}, endDate={}",
+                userId,
+                request.getCarId(),
+                request.getStartDate(),
+                request.getEndDate()
+        );
+
         validateDates(request.getStartDate(), request.getEndDate());
 
-        User user = userRepository.findById(userId)
+        UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "User with id " + userId + " not found"
                 ));
 
-        Car car = carRepository.findByIdAndActiveTrue(
+        CarEntity car = carRepository.findActiveCarForUpdate(
                         request.getCarId()
                 )
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -58,7 +66,7 @@ public class BookingServiceImpl implements BookingService {
                                 + " not found"
                 ));
 
-        RentalLocation pickupLocation =
+        RentalLocationEntity pickupLocation =
                 rentalLocationRepository
                         .findByIdAndActiveTrue(
                                 request.getPickupLocationId()
@@ -69,7 +77,7 @@ public class BookingServiceImpl implements BookingService {
                                         + " not found"
                         ));
 
-        RentalLocation returnLocation =
+        RentalLocationEntity returnLocation =
                 rentalLocationRepository
                         .findByIdAndActiveTrue(
                                 request.getReturnLocationId()
@@ -81,13 +89,19 @@ public class BookingServiceImpl implements BookingService {
                         ));
 
         boolean overlapping = bookingRepository.existsOverlappingBooking(
-                        car.getId(),
-                        request.getStartDate(),
-                        request.getEndDate(),
-                        BookingStatus.CANCELLED
-                );
+                car.getId(),
+                request.getStartDate(),
+                request.getEndDate(),
+                BookingStatus.CANCELLED
+        );
 
         if (overlapping) {
+            log.warn(
+                    "Booking creation rejected: carId={} is already booked, userId={}",
+                    car.getId(),
+                    userId
+            );
+
             throw new BusinessException(
                     "Car is already booked for the selected period"
             );
@@ -102,17 +116,24 @@ public class BookingServiceImpl implements BookingService {
                 .getPricePerDay()
                 .multiply(BigDecimal.valueOf(rentalDays));
 
-        Booking booking = bookingMapper.toEntity(request);
+        BookingEntity booking = bookingMapper.toEntity(request);
 
-        booking.setUser(user);
+        booking.setUser(userEntity);
         booking.setCar(car);
         booking.setPickupLocation(pickupLocation);
         booking.setReturnLocation(returnLocation);
         booking.setTotalPrice(totalPrice);
         booking.setStatus(BookingStatus.PENDING);
 
-        Booking savedBooking =
+        BookingEntity savedBooking =
                 bookingRepository.save(booking);
+
+        log.info(
+                "Booking created successfully: bookingId={}, userId={}, carId={}",
+                savedBooking.getId(),
+                userId,
+                car.getId()
+        );
 
         return bookingMapper.toResponse(savedBooking);
     }
@@ -120,18 +141,18 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingResponse getById(Long id, Long userId) {
 
-        Booking booking = bookingRepository.findById(id)
+        BookingEntity bookingEntity = bookingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Booking with id " + id + " not found"
                 ));
 
-        if (!booking.getUser().getId().equals(userId)) {
+        if (!bookingEntity.getUser().getId().equals(userId)) {
             throw new AccessDeniedException(
                     "You do not have access to this booking"
             );
         }
 
-        return bookingMapper.toResponse(booking);
+        return bookingMapper.toResponse(bookingEntity);
     }
 
     @Override
@@ -161,7 +182,13 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public void cancel(Long id, Long userId) {
 
-        Booking booking = bookingRepository.findById(id)
+        log.info(
+                "Cancelling booking: bookingId={}, userId={}",
+                id,
+                userId
+        );
+
+        BookingEntity booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Booking with id " + id + " not found"
                 ));
@@ -181,6 +208,11 @@ public class BookingServiceImpl implements BookingService {
         }
 
         booking.setStatus(BookingStatus.CANCELLED);
+
+        log.info(
+                "Booking cancelled successfully: bookingId={}",
+                id
+        );
     }
 
     private void validateDates(LocalDate startDate, LocalDate endDate) {

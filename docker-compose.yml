@@ -1,4 +1,5 @@
 services:
+
   postgres:
     image: postgres:16
     container_name: CarRentalSystemPostgres
@@ -16,6 +17,20 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  app:
+    build: .
+    container_name: CarRentalSystemApp
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/CarRentalSystem
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   postgres_data:

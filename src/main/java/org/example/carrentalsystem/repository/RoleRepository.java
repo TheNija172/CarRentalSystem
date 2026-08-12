@@ -1,11 +1,11 @@
 package org.example.carrentalsystem.repository;
 
-import org.example.carrentalsystem.entity.Role;
+import org.example.carrentalsystem.entity.RoleEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface RoleRepository extends JpaRepository<Role, Long> {
+public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
 
-    Optional<Role> findByName(String name);
+    Optional<RoleEntity> findByName(String name);
 }

@@ -1,7 +1,7 @@
 package org.example.carrentalsystem.security;
 
 import lombok.RequiredArgsConstructor;
-import org.example.carrentalsystem.entity.User;
+import org.example.carrentalsystem.entity.UserEntity;
 import org.example.carrentalsystem.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,9 +17,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
 
-        User user = userRepository.findWithRoleByUsername(username).orElseThrow(() ->
+        UserEntity userEntity = userRepository.findWithRoleByUsername(username).orElseThrow(() ->
                         new UsernameNotFoundException("User not found: " + username));
 
-        return new CustomUserDetails(user);
+        return new CustomUserDetails(userEntity);
     }
 }
