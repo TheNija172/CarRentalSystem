@@ -111,10 +111,9 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Transactional
-    public PaymentResponse updateStatus(
-            Long id,
-            PaymentStatus status
-    ) {
+    public PaymentResponse updateStatus(Long id, PaymentStatus status) {
+
+        log.info("Updating payment status: paymentId={}, newStatus={}", id, status);
 
         PaymentEntity paymentEntity = paymentRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Payment with id " + id + " not found"));
@@ -124,6 +123,8 @@ public class PaymentServiceImpl implements PaymentService {
         if (status == PaymentStatus.COMPLETED) {
             paymentEntity.setPaidAt(LocalDateTime.now());
         }
+
+        log.info("Payment status updated successfully: paymentId={}, newStatus={}", id, status);
 
         return paymentMapper.toResponse(paymentEntity);
     }
