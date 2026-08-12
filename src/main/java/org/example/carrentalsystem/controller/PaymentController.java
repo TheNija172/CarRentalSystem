@@ -29,13 +29,13 @@ public class PaymentController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
 
-        return paymentService.create(request, bookingId, userDetails.getUser().getId());
+        return paymentService.create(request, bookingId, userDetails.getUserEntity().getId());
     }
 
     @GetMapping("/{id}")
     public PaymentResponse getById(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        return paymentService.getById(id, userDetails.getUser().getId());
+        return paymentService.getById(id, userDetails.getUserEntity().getId());
     }
 
     @GetMapping("/booking/{bookingId}")
@@ -43,7 +43,7 @@ public class PaymentController {
                                                 @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
 
-        return paymentService.getByBookingId(bookingId, userDetails.getUser().getId());
+        return paymentService.getByBookingId(bookingId, userDetails.getUserEntity().getId());
     }
 
     @PreAuthorize("hasRole('ADMIN')")

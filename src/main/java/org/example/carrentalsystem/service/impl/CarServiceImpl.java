@@ -1,11 +1,12 @@
 package org.example.carrentalsystem.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.carrentalsystem.dto.car.CarCreateRequest;
 import org.example.carrentalsystem.dto.car.CarResponse;
 import org.example.carrentalsystem.dto.car.CarUpdateRequest;
-import org.example.carrentalsystem.entity.Car;
-import org.example.carrentalsystem.entity.CarCategory;
+import org.example.carrentalsystem.entity.CarCategoryEntity;
+import org.example.carrentalsystem.entity.CarEntity;
 import org.example.carrentalsystem.exception.CarAlreadyExistsException;
 import org.example.carrentalsystem.exception.ResourceNotFoundException;
 import org.example.carrentalsystem.mapper.CarMapper;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
@@ -30,7 +32,14 @@ public class CarServiceImpl implements CarService {
     @Transactional
     public CarResponse create(CarCreateRequest request) {
 
+        log.info("Creating car: band={}, model={}",
+                request.getBrand(),
+                request.getModel());
+
         if (carRepository.existsByLicensePlate(request.getLicensePlate())) {
+
+            log.warn("Car with license plate {} already exists", request.getLicensePlate());
+
             throw new CarAlreadyExistsException(
                     "Car with license plate "
                             + request.getLicensePlate()
@@ -38,7 +47,7 @@ public class CarServiceImpl implements CarService {
             );
         }
 
-        CarCategory category = carCategoryRepository
+        CarCategoryEntity category = carCategoryRepository
                 .findById(request.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Car categori with id "
@@ -46,11 +55,13 @@ public class CarServiceImpl implements CarService {
                                 + " not found"
                 ));
 
-        Car car = carMapper.toEntity(request);
+        CarEntity carEntity = carMapper.toEntity(request);
 
-        car.setCategory(category);
+        carEntity.setCategory(category);
 
-        Car savedCar = carRepository.save(car);
+        CarEntity savedCar = carRepository.save(carEntity);
+
+        log.info("Car created successfully: brand={}, model={}", savedCar.getBrand(), savedCar.getModel());
 
         return carMapper.toResponse(savedCar);
     }
@@ -58,10 +69,10 @@ public class CarServiceImpl implements CarService {
     @Override
     public CarResponse getById(Long id) {
 
-        Car car = carRepository.findByIdAndActiveTrue(id).orElseThrow(() ->
+        CarEntity carEntity = carRepository.findByIdAndActiveTrue(id).orElseThrow(() ->
                 new ResourceNotFoundException("Car with id " + id + " not found"));
 
-        return carMapper.toResponse(car);
+        return carMapper.toResponse(carEntity);
     }
 
     @Override
@@ -77,44 +88,48 @@ public class CarServiceImpl implements CarService {
     @Transactional
     public CarResponse update(Long id, CarUpdateRequest request) {
 
-        Car car = carRepository.findById(id).orElseThrow(() ->
+        CarEntity carEntity = carRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Car with id " + id + " not found"));
 
-        if(carRepository.existsByLicensePlateAndIdNot(request.getLicensePlate(), id)) {
+        if (carRepository.existsByLicensePlateAndIdNot(request.getLicensePlate(), id)) {
 
             throw new CarAlreadyExistsException(
                     "Car with license plate "
-                    + request.getLicensePlate()
-                    + " already exists"
+                            + request.getLicensePlate()
+                            + " already exists"
             );
         }
 
-        CarCategory category = carCategoryRepository
+        CarCategoryEntity category = carCategoryRepository
                 .findById(request.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Category with id " + request.getCategoryId() + " not found"
                 ));
 
-        car.setCategory(category);
+        carEntity.setCategory(category);
 
-        carMapper.updateEntity(request, car);
+        carMapper.updateEntity(request, carEntity);
 
-        Car updatedCar = carRepository.save(car);
+        CarEntity updatedCarEntity = carRepository.save(carEntity);
 
-        return carMapper.toResponse(updatedCar);
+        return carMapper.toResponse(updatedCarEntity);
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
 
-        Car car = carRepository.findById(id)
+        log.info("Deleting car: id={}", id);
+
+        CarEntity carEntity = carRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Car with id " + id + " not found"
                 ));
 
-        car.setActive(false);
+        carEntity.setActive(false);
 
-        carRepository.save(car);
+        carRepository.save(carEntity);
+
+        log.info("Car deleted: id={}", id);
     }
 }

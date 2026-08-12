@@ -26,19 +26,19 @@ public class BookingController {
                                   @AuthenticationPrincipal CustomUserDetails userDetails)
     {
 
-        return bookingService.create(request, userDetails.getUser().getId());
+        return bookingService.create(request, userDetails.getUserEntity().getId());
     }
 
     @GetMapping("/my")
     public List<BookingResponse> getMyBookings(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        return bookingService.getByUserId(userDetails.getUser().getId());
+        return bookingService.getByUserId(userDetails.getUserEntity().getId());
     }
 
     @GetMapping("/{id}")
     public BookingResponse getById(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        return bookingService.getById(id, userDetails.getUser().getId());
+        return bookingService.getById(id, userDetails.getUserEntity().getId());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -59,6 +59,6 @@ public class BookingController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void cancel(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        bookingService.cancel(id, userDetails.getUser().getId());
+        bookingService.cancel(id, userDetails.getUserEntity().getId());
     }
 }

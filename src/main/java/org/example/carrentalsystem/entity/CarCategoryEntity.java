@@ -1,7 +1,9 @@
 package org.example.carrentalsystem.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +12,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -18,8 +21,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "users")
-public class User {
+@Table(name = "car_categories")
+public class CarCategoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,35 +30,20 @@ public class User {
 
     @NotBlank
     @Column(nullable = false, unique = true)
-    private String username;
+    private String name;
 
-    @NotBlank
-    @Column(nullable = false)
-    private String password;
+    private String description;
 
-    @NotBlank
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
-
-    @NotBlank
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
-
-    @Column(length = 20)
-    private String phone;
-
-    @Column(nullable = false)
-    private boolean active = true;
+    @NotNull
+    @DecimalMin(value = "0.01")
+    @Column(name = "price_per_day", nullable = false, precision = 10, scale = 2)
+    private BigDecimal pricePerDay;
 
     @CreatedDate
-    @Column(name =  "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id", nullable = false)
-    private Role role;
 }

@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "bookings")
-public class Booking {
+public class BookingEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,17 +52,17 @@ public class Booking {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "car_id", nullable = false)
-    private Car car;
+    private CarEntity car;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pickup_location_id", nullable = false)
-    private RentalLocation pickupLocation;
+    private RentalLocationEntity pickupLocation;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "return_location_id", nullable = false)
-    private RentalLocation returnLocation;
+    private RentalLocationEntity returnLocation;
 }

@@ -1,10 +1,11 @@
 package org.example.carrentalsystem.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.carrentalsystem.dto.category.CarCategoryCreateRequest;
 import org.example.carrentalsystem.dto.category.CarCategoryResponse;
 import org.example.carrentalsystem.dto.category.CarCategoryUpdateRequest;
-import org.example.carrentalsystem.entity.CarCategory;
+import org.example.carrentalsystem.entity.CarCategoryEntity;
 import org.example.carrentalsystem.exception.CategoryInUseException;
 import org.example.carrentalsystem.exception.ResourceNotFoundException;
 import org.example.carrentalsystem.mapper.CarCategoryMapper;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -30,17 +32,24 @@ public class CarCategoryServiceImpl implements CarCategoryService {
     @Transactional
     public CarCategoryResponse create(CarCategoryCreateRequest request) {
 
-        CarCategory category = carCategoryMapper.toEntity(request);
+        log.info("Creating car category: name={}", request.getName());
 
-        CarCategory saveCategory = carCategoryRepository.save(category);
+        CarCategoryEntity category = carCategoryMapper.toEntity(request);
 
-        return carCategoryMapper.toResponse(saveCategory);
+        CarCategoryEntity savedCategory = carCategoryRepository.save(category);
+
+        log.info(
+                "Car category created successfully: categoryId={}",
+                savedCategory.getId()
+        );
+
+        return carCategoryMapper.toResponse(savedCategory);
     }
 
     @Override
     public CarCategoryResponse getById(Long id) {
 
-        CarCategory category = carCategoryRepository.findById(id)
+        CarCategoryEntity category = carCategoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Car category with id " + id + " not found"
                 ));
@@ -61,14 +70,14 @@ public class CarCategoryServiceImpl implements CarCategoryService {
     @Transactional
     public CarCategoryResponse update(Long id, CarCategoryUpdateRequest request) {
 
-        CarCategory category = carCategoryRepository.findById(id)
+        CarCategoryEntity category = carCategoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Car category with id " + id + " not found"
                 ));
 
         carCategoryMapper.updateEntity(request, category);
 
-        CarCategory updatedCategory = carCategoryRepository.save(category);
+        CarCategoryEntity updatedCategory = carCategoryRepository.save(category);
 
         return carCategoryMapper.toResponse(updatedCategory);
     }
@@ -77,16 +86,22 @@ public class CarCategoryServiceImpl implements CarCategoryService {
     @Transactional
     public void delete(Long id) {
 
-        CarCategory category = carCategoryRepository.findById(id)
+        log.info("Deleting car category: id={}", id);
+
+        CarCategoryEntity category = carCategoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Car category with id " + id + " not found"
                 ));
 
         if (carRepository.existsByCategoryId(id)) {
+            log.warn("Cannot delete category because it is used by cars");
+
             throw new CategoryInUseException(
                     "Cannot delete category because it is used by cars"
             );
         }
+
+        log.info("Creating car category with id {} deleted", id);
 
         carCategoryRepository.delete(category);
 

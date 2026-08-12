@@ -7,7 +7,6 @@ import org.example.carrentalsystem.dto.review.ReviewResponse;
 import org.example.carrentalsystem.security.CustomUserDetails;
 import org.example.carrentalsystem.service.ReviewService;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +25,7 @@ public class ReviewController {
                                  @AuthenticationPrincipal CustomUserDetails userDetails)
     {
 
-        return reviewService.create(request, userDetails.getUser().getId());
+        return reviewService.create(request, userDetails.getUserEntity().getId());
     }
 
     @GetMapping("/{id}")
@@ -49,7 +48,7 @@ public class ReviewController {
     ) {
         reviewService.delete(
                 id,
-                userDetails.getUser().getId()
+                userDetails.getUserEntity().getId()
         );
     }
 }

@@ -3,7 +3,7 @@ package org.example.carrentalsystem.mapper;
 import org.example.carrentalsystem.dto.user.UserCreateRequest;
 import org.example.carrentalsystem.dto.user.UserResponse;
 import org.example.carrentalsystem.dto.user.UserUpdateRequest;
-import org.example.carrentalsystem.entity.User;
+import org.example.carrentalsystem.entity.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -12,12 +12,12 @@ import org.mapstruct.MappingTarget;
 public interface  UserMapper {
 
     @Mapping(source = "role.name", target = "role")
-    UserResponse toResponse(User user);
+    UserResponse toResponse(UserEntity userEntity);
 
     @Mapping(target = "role", ignore = true)
-    User toEntity(UserCreateRequest request);
+    UserEntity toEntity(UserCreateRequest request);
 
     @Mapping(target = "role", ignore = true)
-    void updateEntity(UserUpdateRequest request, @MappingTarget User user);
+    void updateEntity(UserUpdateRequest request, @MappingTarget UserEntity userEntity);
 
 }

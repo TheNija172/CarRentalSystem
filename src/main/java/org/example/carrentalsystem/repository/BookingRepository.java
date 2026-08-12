@@ -1,6 +1,6 @@
 package org.example.carrentalsystem.repository;
 
-import org.example.carrentalsystem.entity.Booking;
+import org.example.carrentalsystem.entity.BookingEntity;
 import org.example.carrentalsystem.enums.BookingStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,15 +9,15 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface BookingRepository extends JpaRepository<Booking, Long> {
+public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
 
-    List<Booking> findByUserId(Long userId);
+    List<BookingEntity> findByUserId(Long userId);
 
-    List<Booking> findByCarId(Long carId);
+    List<BookingEntity> findByCarId(Long carId);
 
     @Query("""
         SELECT COUNT(b) > 0
-        FROM Booking b
+        FROM BookingEntity b
         WHERE b.car.id = :carId
           AND b.status <> :cancelledStatus
           AND b.startDate < :endDate
